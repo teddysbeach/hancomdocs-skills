@@ -4,6 +4,12 @@
 
 > Claude Code skills for editing Korean HWP documents on Hancom Docs (web HWP) through Claude in Chrome.
 
+## 소개 영상
+
+터미널에 한 줄 요청하면, Claude가 한컴독스 문서에 원고를 붙여넣고 서식정리·자간까지 끝냅니다. 브라우저 쪽은 실제 화면 녹화입니다(일부 배속).
+
+[![소개 영상 보기 (69초)](docs/images/intro-poster.png)](https://github.com/user-attachments/assets/13b23a33-cbed-4c05-82e3-a5b8bfd7d2ed)
+
 ## 왜 만들었나
 
 rhwp를 비롯해 HWP를 다루는 스킬과 도구를 정말 많이 써 봤습니다. 파일을 읽거나 새로 만드는 건 잘 됐지만, 정작 실무에는 쓸 수가 없었습니다. 사업계획서나 연구개발계획서는 기관이 내려 준 양식이 있고, 그 양식에 걸린 글자·문단 모양, 표 서식, 쪽 설정을 그대로 지켜야 합니다. 파일을 변환하거나 새로 생성하는 순간 이 세팅이 틀어졌고, 다시 손으로 맞추는 데 시간이 더 들었습니다.
@@ -18,11 +24,7 @@ rhwp를 비롯해 HWP를 다루는 스킬과 도구를 정말 많이 써 봤습�
 - F5를 누르면 브라우저가 새로 고쳐져 문서가 닫힌다
 - 도구 모음의 `한 수준 감소`는 이름과 반대로 한 단계 아래로 내린다
 
-## 소개 영상
 
-터미널에 한 줄 요청하면, Claude가 한컴독스 문서에 원고를 붙여넣고 서식정리·자간까지 끝냅니다. 브라우저 쪽은 실제 화면 녹화입니다(일부 배속).
-
-[![소개 영상 보기 (69초)](docs/images/intro-poster.png)](docs/hancomdocs-skills-intro.mp4)
 
 <details>
 <summary>GIF로 미리 보기 (12초)</summary>
