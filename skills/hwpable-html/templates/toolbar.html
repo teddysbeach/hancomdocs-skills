@@ -1,0 +1,165 @@
+<!--hwp-toolbar:start-->
+<style id="hwp-toolbar-style">
+  #hwp-toolbar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: center; padding: 8px 12px; background: #1F2A37; color: #FFFFFF; font: 13px/1.4 -apple-system, "Malgun Gothic", "맑은고딕", sans-serif; user-select: none; -webkit-user-select: none; box-shadow: 0 1px 4px rgba(0,0,0,0.25); }
+  #hwp-toolbar * { font: inherit; line-height: 1.4; margin: 0; padding: 0; color: inherit; }
+  #hwp-toolbar .hwp-grp { display: inline-flex; align-items: center; gap: 4px; }
+  #hwp-toolbar .hwp-lb { opacity: 0.75; margin-right: 2px; }
+  #hwp-toolbar button { background: #364152; border: 1px solid #4B5563; border-radius: 4px; padding: 3px 10px; cursor: pointer; }
+  #hwp-toolbar button:hover { background: #4B5563; }
+  #hwp-toolbar button.hwp-pri { background: #2563EB; border-color: #2563EB; font-weight: 600; }
+  #hwp-toolbar .hwp-val { min-width: 48px; text-align: center; font-weight: 600; }
+  #hwp-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 9999; background: #1F2A37; color: #FFFFFF; font: 13px/1.4 -apple-system, "Malgun Gothic", sans-serif; padding: 8px 14px; border-radius: 6px; opacity: 0; transition: opacity 0.2s; pointer-events: none; user-select: none; -webkit-user-select: none; }
+  #hwp-toast.hwp-on { opacity: 1; }
+  .hwp-blockcopy { float: right; margin: 0 0 2px 8px; background: #2563EB; color: #FFFFFF; border: none; border-radius: 4px; padding: 2px 8px; font: 12px/1.4 -apple-system, "Malgun Gothic", sans-serif; cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .hwp-blockcopy:hover { background: #1D4ED8; }
+  @media print { .hwp-blockcopy { display: none; } }
+  html body { padding-top: 60px !important; }
+  table:not([data-orgchart]):not(.oc) th, table:not([data-orgchart]):not(.oc) td { box-sizing: border-box; }
+  body.hwp-hide-guide .guide, body.hwp-copying .guide { display: none !important; }
+  @media print { #hwp-toolbar, #hwp-toast { display: none; } html body { padding-top: 0 !important; } }
+</style>
+<div id="hwp-toolbar">
+  <span class="hwp-grp"><span class="hwp-lb">본문 글자</span><button type="button" data-hwp-k="b" data-hwp-d="-0.5">−</button><span class="hwp-val" id="hwp-vb">-</span><button type="button" data-hwp-k="b" data-hwp-d="0.5">+</button></span>
+  <span class="hwp-grp"><span class="hwp-lb">표 글자</span><button type="button" data-hwp-k="t" data-hwp-d="-0.5">−</button><span class="hwp-val" id="hwp-vt">-</span><button type="button" data-hwp-k="t" data-hwp-d="0.5">+</button></span>
+  <span class="hwp-grp"><button type="button" id="hwp-reset">원래 크기</button></span>
+  <span class="hwp-grp" id="hwp-guide-grp" style="display:none"><button type="button" id="hwp-guide">안내 상자 숨기기</button></span>
+  <span class="hwp-grp"><button type="button" class="hwp-pri" id="hwp-copy">본문 복사</button></span>
+</div>
+<div id="hwp-toast"></div>
+<script>
+(function () {
+  var KEY = 'hwp-font:' + location.pathname;
+  var orig = new WeakMap();
+  var els = [], dB = 0, dT = 0, baseB = 12, baseT = 12;
+
+  function isUi(el) { return !!(el.closest && el.closest('#hwp-toolbar, #hwp-toast')); }
+  function isOrg(t) { return t.hasAttribute('data-orgchart') || t.classList.contains('oc'); }
+  function inTable(el) { return !!el.closest('table'); }
+  function toPt(px) { return Math.round(parseFloat(px) * 0.75 * 2) / 2; }
+  function hasText(el) {
+    for (var n = el.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.nodeValue.trim()) return true;
+    return false;
+  }
+  function mode(arr) {
+    var c = {}, best = null, m = 0;
+    arr.forEach(function (v) { c[v] = (c[v] || 0) + 1; if (c[v] > m) { m = c[v]; best = v; } });
+    return best;
+  }
+  function contentKids() {
+    return Array.prototype.filter.call(document.body.children, function (el) {
+      return !isUi(el) && ['SCRIPT', 'STYLE'].indexOf(el.tagName) < 0;
+    });
+  }
+
+  // 표 폭: 브라우저가 잡은 실제 폭을 셀 width 속성으로 고정한다 (HWP는 CSS 폭을 무시하고 width 속성을 따른다)
+  function sizeTables() {
+    Array.prototype.forEach.call(document.querySelectorAll('table'), function (t) {
+      if (isUi(t) || isOrg(t) || (t.parentElement && t.parentElement.closest('table[data-orgchart], table.oc'))) return;
+      var cells = Array.prototype.slice.call(t.querySelectorAll('th, td'));
+      t.removeAttribute('width'); t.style.width = '';
+      cells.forEach(function (c) { c.removeAttribute('width'); c.style.width = ''; });
+      var par = t.parentElement, ps = getComputedStyle(par);
+      var usable = par.clientWidth - parseFloat(ps.paddingLeft || 0) - parseFloat(ps.paddingRight || 0);
+      if (usable > 0 && t.getBoundingClientRect().width > usable) t.style.width = usable + 'px';
+      var ws = cells.map(function (c) { return Math.round(c.getBoundingClientRect().width); });
+      cells.forEach(function (c, i) { c.setAttribute('width', ws[i]); c.style.width = ws[i] + 'px'; });
+      var tw = Math.round(t.getBoundingClientRect().width);
+      t.setAttribute('width', tw); t.style.width = tw + 'px';
+    });
+  }
+
+  // 글자 크기: 요소마다 원래 크기를 기억하고, 본문·표에 각각 증감값을 더해 인라인 pt로 넣는다
+  function apply() {
+    els.forEach(function (el) {
+      var v = orig.get(el) + (inTable(el) ? dT : dB);
+      el.style.fontSize = Math.max(6, v) + 'pt';
+    });
+    document.getElementById('hwp-vb').textContent = (baseB + dB) + 'pt';
+    document.getElementById('hwp-vt').textContent = (baseT + dT) + 'pt';
+    try { localStorage.setItem(KEY, JSON.stringify({ b: dB, t: dT })); } catch (e) {}
+    sizeTables();
+  }
+
+  function init() {
+    els = Array.prototype.filter.call(document.body.querySelectorAll('*'), function (el) {
+      return !isUi(el) && ['SCRIPT', 'STYLE', 'BR'].indexOf(el.tagName) < 0 && !el.closest('.guide');
+    });
+    var bs = [], ts = [];
+    els.forEach(function (el) {
+      var v = toPt(getComputedStyle(el).fontSize);
+      orig.set(el, v);
+      if (hasText(el)) (inTable(el) ? ts : bs).push(v);
+    });
+    baseB = mode(bs) || 12; baseT = mode(ts) || baseB;
+    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) { dB = s.b || 0; dT = s.t || 0; } } catch (e) {}
+    if (document.querySelector('.guide')) { document.getElementById('hwp-guide-grp').style.display = ''; addBlockButtons(); }
+    apply();
+  }
+
+  function toast(msg) {
+    var el = document.getElementById('hwp-toast');
+    el.textContent = msg; el.classList.add('hwp-on');
+    clearTimeout(toast.t); toast.t = setTimeout(function () { el.classList.remove('hwp-on'); }, 2400);
+  }
+
+  // 선택 범위 복사: 안내 상자(.guide)는 숨긴 채 복사해 붙여넣기에서 빠지게 한다
+  function copyRange(first, last, label) {
+    if (!first || !last) return;
+    document.body.classList.add('hwp-copying');
+    var sel = window.getSelection(), r = document.createRange();
+    sel.removeAllRanges();
+    r.setStartBefore(first); r.setEndAfter(last);
+    sel.addRange(r);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    sel.removeAllRanges();
+    document.body.classList.remove('hwp-copying');
+    toast(ok ? label + '을 복사했습니다. 한글에 붙여넣으세요' : '복사하지 못했습니다. 드래그해 복사하세요');
+  }
+
+  // 본문 복사: 툴바와 안내 상자를 뺀 본문 전체
+  function copyContent() {
+    var kids = contentKids();
+    copyRange(kids[0], kids[kids.length - 1], '본문');
+  }
+
+  // 블록 복사: 안내 상자 바로 뒤부터 다음 안내 상자 앞까지
+  function addBlockButtons() {
+    var kids = contentKids();
+    kids.forEach(function (g, i) {
+      if (!g.classList.contains('guide') || g.querySelector('.hwp-blockcopy')) return;
+      var j = i + 1, last = null;
+      while (j < kids.length && !kids[j].classList.contains('guide')) { last = kids[j]; j++; }
+      if (!last) return;
+      var first = kids[i + 1];
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'hwp-blockcopy'; b.textContent = '이 블록 복사';
+      b.addEventListener('click', function () { copyRange(first, last, '블록'); });
+      g.insertBefore(b, g.firstChild);
+    });
+  }
+
+  function bind() {
+    document.getElementById('hwp-toolbar').addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      if (b.hasAttribute('data-hwp-k')) {
+        var d = parseFloat(b.getAttribute('data-hwp-d'));
+        if (b.getAttribute('data-hwp-k') === 'b') dB += d; else dT += d;
+        apply();
+      } else if (b.id === 'hwp-reset') { dB = 0; dT = 0; apply(); }
+      else if (b.id === 'hwp-guide') {
+        var on = document.body.classList.toggle('hwp-hide-guide');
+        b.textContent = on ? '안내 상자 보이기' : '안내 상자 숨기기';
+        sizeTables();
+      } else if (b.id === 'hwp-copy') copyContent();
+    });
+    var rt;
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(sizeTables, 150); });
+  }
+
+  function start() { bind(); setTimeout(init, 30); }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+})();
+</script>
+<!--hwp-toolbar:end-->

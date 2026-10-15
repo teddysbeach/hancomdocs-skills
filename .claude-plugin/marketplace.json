@@ -1,0 +1,14 @@
+{
+  "name": "hancomdocs-skills",
+  "description": "한컴독스(웹 한글)·HWP 작업용 Claude Code 스킬 모음",
+  "owner": {
+    "name": "teddysbeach"
+  },
+  "plugins": [
+    {
+      "name": "hancomdocs",
+      "source": "./",
+      "description": "한컴독스(웹 한글) 문서를 Claude in Chrome으로 읽고 고치는 스킬 묶음 + HWP 붙여넣기용 HTML 변환기"
+    }
+  ]
+}

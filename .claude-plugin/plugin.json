@@ -1,0 +1,10 @@
+{
+  "name": "hancomdocs",
+  "version": "0.1.0",
+  "description": "한컴독스(웹 한글) 문서를 Claude in Chrome으로 읽고 고치는 스킬 묶음 + HWP 붙여넣기용 HTML 변환기",
+  "author": { "name": "teddysbeach" },
+  "homepage": "https://github.com/teddysbeach/hancomdocs-skills",
+  "repository": "https://github.com/teddysbeach/hancomdocs-skills",
+  "license": "MIT",
+  "keywords": ["hwp", "hancom", "hancomdocs", "korean", "한글", "한컴독스"]
+}

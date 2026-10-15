@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      font-family: "맑은고딕", "Malgun Gothic", sans-serif;
+      font-size: 10pt;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .item-1 { margin-left: 16px; }
+    .item-2 { margin-left: 32px; }
+    .item-3 { margin-left: 48px; }
+    table {
+      display: inline-table;
+      border-collapse: collapse;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+    th {
+      background: {{TH_BG}};
+      color: {{TH_COLOR}};
+      border: 1px solid {{BORDER_COLOR}};
+      font-size: 9pt;
+      padding: 4px 6px;
+      white-space: nowrap;
+      text-align: center;
+      font-weight: bold;
+    }
+    td {
+      background: {{TD_BG}};
+      border: 1px solid {{BORDER_COLOR}};
+      font-size: 9pt;
+      padding: 4px 6px;
+      vertical-align: top;
+    }
+    .special-finish {
+      border: 2px double black;
+      text-align: center;
+      padding: 10px;
+      font-family: "HY견명조", "맑은고딕", sans-serif;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+{{CONTENT}}
+
+<!-- 저장 뒤 scripts/add_toolbar.py 로 글자 크기 툴바·본문 복사·표 폭 고정 스크립트를 넣는다 -->
+
+</body>
+</html>

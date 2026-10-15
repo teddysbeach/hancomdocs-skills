@@ -1,0 +1,27 @@
+{
+  "width": 600,
+  "font_pt": 12,
+  "root": {"title": "사업 총괄", "sub": "업체A · 총괄책임자"},
+  "side": {"title": "외부 자문", "sub": "기관A"},
+  "sections": [
+    {"nodes": [
+      {"title": "과제1 · 프로젝트A", "sub": "업체A · 책임자",
+       "children": [{"title": "업체B", "sub": "개발"}, {"title": "업체C", "sub": "검증"}],
+       "detail": "프로젝트A 개발\n1차년도 완료"},
+      {"title": "과제2 · 프로젝트B", "sub": "업체D · 책임자",
+       "children": [{"title": "업체C", "sub": "운영"}, {"title": "업체E", "sub": "장비"}],
+       "detail": "프로젝트B 현장 적용\n2차년도 완료"},
+      {"title": "과제3 · 프로젝트C", "sub": "기관B · 책임자",
+       "children": [{"title": "업체A", "sub": "기획"}, {"title": "대학A", "sub": "연구"}],
+       "detail": "프로젝트C 고도화\n3차년도 완료"}
+    ]},
+    {"band": "▼ 전 과제 공통 지원 ▼", "nodes": [
+      {"title": "기술지원반", "sub": "운영 · 장애 대응",
+       "children": [{"title": "대학A", "sub": "기술 자문"}, {"title": "업체A", "sub": "시스템"}]},
+      {"title": "데이터반", "sub": "수집 · 관리",
+       "children": [{"title": "기관B\n연구소A", "sub": "데이터"}, {"title": "업체F", "sub": "가공"}]},
+      {"title": "품질관리반", "sub": "점검 · 보안",
+       "children": [{"title": "업체E", "sub": "품질"}, {"title": "업체G", "sub": "보안"}]}
+    ]}
+  ]
+}
