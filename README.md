@@ -1,6 +1,9 @@
 # hancomdocs-skills
 
-한컴독스(hancomdocs.com, 웹 한글)에 올린 `.hwp` 문서를 **Claude가 브라우저로 직접 읽고 고치게** 하는 Claude Code 스킬 묶음입니다.
+![Claude가 한컴독스 문서를 수정하는 장면](docs/images/intro-demo.gif)
+
+한컴독스(hancomdocs.com, 웹 한글)에 올린 `.hwp` 문서를 **Claude가 브라우저로 직접 읽고 고치게** 하는 Claude Code 스킬 묶음입니다.  
+사업계획서, 연구개발계획서, 보고서, 협약서, 계약서.. 등 상세하게 글 작성 계획을 하고 난 뒤에 실제 작성은 AI가 쓰는 경우가 많아져서 만들었습니다.  
 
 > Claude Code skills for editing Korean HWP documents on Hancom Docs (web HWP) through Claude in Chrome.
 
@@ -25,13 +28,6 @@ rhwp를 비롯해 HWP를 다루는 스킬과 도구를 정말 많이 써 봤습�
 - 도구 모음의 `한 수준 감소`는 이름과 반대로 한 단계 아래로 내린다
 
 
-
-<details>
-<summary>GIF로 미리 보기 (12초)</summary>
-
-![Claude가 한컴독스 문서를 수정하는 장면](docs/images/intro-demo.gif)
-
-</details>
 
 ## 스킬 구성
 
